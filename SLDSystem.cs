@@ -1,3 +1,5 @@
+//Optional Unity editor file
+//Should create a new menu for you to preview what data is saved within your file.
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
