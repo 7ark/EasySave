@@ -22,27 +22,32 @@ public static class SaveLoadData
 {
     public static void Save<T>(string DataFileName, T DataToSave, string OptionalPath = "")
     {
+        //Figure out what type of data we're working with
         Type DataType = DataToSave.GetType();
 
+        //If the directory doesn't exist, make it
         Directory.CreateDirectory(Application.persistentDataPath + "/Extensions");
 
         BinaryFormatter BFD = new BinaryFormatter();
         string FilePathData = "/Extensions/" + DataFileName + ".ext";
+        //Create our file
         FileStream SaveStreamData = File.Create(Application.persistentDataPath + FilePathData);
 
-        string Data = DataType.Name;//.Split('`')[0].Split('[')[1];
+        //Shitty way of naming stuff
+        string Data = DataType.Name;
         if (Data.Contains("`")) Data = Data.Split('`')[0];
         if (Data.Contains("[]")) { Data = "Array"; }
-
-
+        
+        //If passed an optional path, use that
         if (OptionalPath != "") Data = OptionalPath;
 
+        //Save that data (the extension data)
         BFD.Serialize(SaveStreamData, Data);
         SaveStreamData.Close();
 
         BinaryFormatter BF = new BinaryFormatter();
 
-
+        //Save our real data
         string FilePath = "/" + DataFileName + "." + Data;
         if (OptionalPath != "")
             FilePath = "/" + DataFileName + "." + OptionalPath;
@@ -59,8 +64,10 @@ public static class SaveLoadData
 
         string FileExt = "";
 
+        //Check if file exists
         if (File.Exists(Application.persistentDataPath + FilePathData))
         {
+            //If it does, load that data
             BinaryFormatter BFD = new BinaryFormatter();
             FileStream LoadStreamData = File.Open(Application.persistentDataPath + FilePathData, FileMode.Open);
             FileExt = (string)BFD.Deserialize(LoadStreamData);
@@ -69,10 +76,10 @@ public static class SaveLoadData
         else
             return Result;
 
+        //Load our real data tho
         string FilePath = "/" + DataFileName + "." + FileExt;
         if (OptionalPath != "")
             FilePath = "/" + DataFileName + "." + OptionalPath;
-        //if (!new FileInfo(FilePath).Exists) Debug.LogError("File does not exist");
         if (File.Exists(Application.persistentDataPath + FilePath))
         {
             BinaryFormatter BF = new BinaryFormatter();
